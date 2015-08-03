@@ -1,10 +1,10 @@
 Package.describe({
-  name: 'netanelgilad:angular2-typescript',
-  version: '0.0.3',
+  name: 'sclausen:angular2-typescript',
+  version: '0.0.4',
   // Brief, one-line summary of the package.
   summary: 'Compile Angular2 code using Typescript compiler.',
   // URL to the Git repository containing the source code for this package.
-  git: 'http://github.com/netanelgilad/meteor-angular2-typescript',
+  git: 'http://github.com/sclausen/meteor-angular2-typescript',
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
   documentation: 'README.md'
@@ -16,7 +16,7 @@ Package.registerBuildPlugin({
     'plugin/handler.js'
   ],
   npmDependencies : {
-    'typescript' : '1.5.0-beta'
+    'typescript' : '1.5.3'
   }
 });
 
@@ -26,6 +26,6 @@ Package.onUse(function(api) {
 
 Package.onTest(function(api) {
   api.use('tinytest');
-  api.use('netanelgilad:angular2-typescript');
+  api.use('scöausen:angular2-typescript');
   api.addFiles('angular-ts-tests.js');
 });
