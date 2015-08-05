@@ -9,15 +9,14 @@ Plugin.registerSourceHandler('ts', function(compileStep) {
     output = typescript.transpile(compileStep.read().toString('utf8'), {
       module: typescript.ModuleKind.System
     });
-    moduleName = compileStep.inputPath.replace(/\\/, '/').replace('.ng.ts', '');
+    moduleName = compileStep.inputPath.replace(/\\/g, '/').replace('.ng.ts', '');
     output = output.replace("System.register([", 'System.register("' + moduleName + '",[');
   } else {
-    moduleName = compileStep.inputPath.replace(/\\/, '/').replace('.ts', '');
     output = typescript.transpile(compileStep.read().toString('utf8'));
   }
 
   compileStep.addJavaScript({
-    path: compileStep.inputPath.replace('.ts', '.js'),
+    path: compileStep.inputPath.replace('.ng', '').replace('.ts', '.js'),
     data: output,
     sourcePath: compileStep.inputPath
   });

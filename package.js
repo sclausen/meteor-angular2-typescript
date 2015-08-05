@@ -1,6 +1,6 @@
 Package.describe({
   name: 'sclausen:angular2-typescript',
-  version: '1.0.0',
+  version: '1.0.1',
   // Brief, one-line summary of the package.
   summary: 'Compile Angular2 code using Typescript compiler.',
   // URL to the Git repository containing the source code for this package.
