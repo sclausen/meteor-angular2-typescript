@@ -11,12 +11,12 @@ Package.describe({
 });
 
 Package.registerBuildPlugin({
-  name : 'ts',
-  sources : [
+  name: 'ts',
+  sources: [
     'plugin/handler.js'
   ],
-  npmDependencies : {
-    'typescript' : '1.5.3'
+  npmDependencies: {
+    'typescript': '1.5.3'
   }
 });
 
