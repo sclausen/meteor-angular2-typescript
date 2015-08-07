@@ -1,44 +1,47 @@
-var ts = Npm.require('typescript');
+var typescript = Npm.require('typescript');
 
-Plugin.registerSourceHandler('ts', function(compileStep) {
-  ngTs = !!compileStep.inputPath.match(new RegExp(/.ng.ts$/i));
-  dTs = !!compileStep.inputPath.match(new RegExp(/.d.ts$/i));
-  if (dTs) {
+/**
+ * TypeScript Settings
+ * for Angular 2
+ */
+var SETTINGS = {
+  module: typescript.ModuleKind.System,
+  emitDecoratorMetadata: true,
+  experimentalDecorators: true
+};
+
+Plugin.registerSourceHandler('ts', function (compileStep) {
+
+  // path to file from app root
+  var inputPath = compileStep.inputPath;
+
+  // skip `.d.ts` files & handle only `.ng.ts` files
+  var dTs = !!inputPath.match(new RegExp(/.d.ts$/i));
+  var ngTs = !!inputPath.match(new RegExp(/.ng.ts$/));
+  if (dTs || !ngTs) {
+    // default TypeScript handling
     return true;
   }
 
-  var output,
-    moduleName,
-    diagnostics = [],
-    sourceCode = compileStep.read().toString('utf8'),
-    fileName = compileStep.pathForSourceMap;
+  // grab the code as a string
+  var sourceCode = compileStep.read().toString('utf8');
+  // sourcemaps file path
+  var fileName = compileStep.pathForSourceMap;
 
-  if (ngTs === true) {
-    output = ts.transpile(sourceCode, {
-      module: ts.ModuleKind.System,
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true
-    }, fileName, diagnostics);
-    moduleName = compileStep.inputPath.replace(/\\/g, '/').replace('.ng', '').replace('.ts', '');
-    output = output.replace("System.register([", 'System.register("' + moduleName + '",[');
-  } else {
-    output = ts.transpile(sourceCode, {
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true
-    }, fileName, diagnostics);
-  }
+  // transpile TypeScript
+  var output = typescript.transpile(sourceCode, SETTINGS, fileName);
+  // register module with code
+  var moduleName = inputPath.replace(/\\/, '/').replace('.ng.ts', '');
+  // register the module with System.js
+  var data = output.replace("System.register([", 'System.register("' + moduleName + '",[');
 
-  if (diagnostics.length) {
-    var errorMessage = "";
-    diagnostics.forEach(function(d) {
-      errorMessage += compileStep.inputPath + " TS" + d.code + " " + d.messageText + "\n";
-    });
-    console.error(errorMessage + "\n");
-  }
-
+  // output
   compileStep.addJavaScript({
-    path: compileStep.inputPath.replace('.ng', '').replace('.ts', '.js'),
-    data: output,
-    sourcePath: compileStep.inputPath
+    // rename the file .js
+    path: inputPath.replace('.ng', '').replace('.ts', '.js'),
+    // output code
+    data: data,
+    // path to original `.ng.ts` file
+    sourcePath: inputPath
   });
 });
